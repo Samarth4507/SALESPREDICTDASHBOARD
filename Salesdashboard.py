@@ -67,7 +67,7 @@ with st.sidebar:
 # Function to load and preprocess data
 @st.cache_data
 def get_data():
-    url = "https://raw.githubusercontent.com/Samarth4507/Sales-Predicting-dashboard/main/sales_data.csv"
+    url = "https://raw.githubusercontent.com/Samarth4507/SALESPREDICTDASHBOARD/main/sales_data.csv"
     try:
         data = pd.read_csv(url)
         data['timestamp'] = pd.to_datetime(data['timestamp'], format='%d-%m-%Y %H:%M', errors='coerce')
