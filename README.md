@@ -1,99 +1,143 @@
-# **Sales Dashboard**
 
-## **Overview**
+# **Sales Predicting Dashboard**
 
-The **Sales Dashboard** is an interactive web application that provides comprehensive insights into sales data. Built with **Streamlit**, **Plotly**, and machine learning, the dashboard allows users to analyze sales trends, compare product performance, and predict future sales.
+## **Project Overview**
+This project is a **Sales Predicting Dashboard** built with **Streamlit**. It provides insights into sales trends, customer demographics, and product performance. Additionally, it includes a machine learning model to predict total sales based on units sold and price per unit.
 
----
-
-## **Features**
-
-1. **Dynamic Sales Insights**
-   - Visualize total sales, units sold, and top-performing products and countries.
-   - Interactive filters for products, dates, countries, and demographics.
-
-2. **Trend Analysis**
-   - Identify monthly and yearly sales trends.
-   - Understand seasonality with time-series visualizations.
-
-3. **Product and Demographic Analysis**
-   - Break down sales performance by product, gender, and country.
-   - Compare sales using pie charts and bar graphs.
-
-4. **Sales Prediction**
-   - Predict total sales using a trained machine learning model.
-   - Visualize actual vs. predicted sales for deeper insights.
-
-5. **Data Export**
-   - Download filtered data for further offline analysis.
+### **Features**
+- Interactive data filtering by product, country, gender, and date range.
+- Data visualizations such as line charts, bar plots, and pie charts.
+- Machine learning regression model for predicting total sales.
+- Dark-themed user interface with custom styling for an enhanced user experience.
 
 ---
 
-## **Technologies Used**
+## **Setup and Execution**
 
-- **Frontend:** [Streamlit](https://streamlit.io)
-- **Visualizations:** [Plotly](https://plotly.com)
-- **Machine Learning:** scikit-learn, RandomForestRegressor
-- **Backend Logic:** Python (Pandas, NumPy)
+### **Pre-requisites**
+1. Python (>= 3.8)
+2. Install the required libraries:
+   ```bash
+   pip install pandas streamlit plotly scikit-learn streamlit-option-menu matplotlib
+   ```
 
----
-sales-dashboard/
-│
-├── Salesdashboard.py      # Main application script
-├── sales_data.csv         # Example dataset
-├── regression_model.pkl   # Trained machine learning model
-├── README.md              # Documentation
-# **Sales Dashboard**
+### **Steps to Run**
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/Samarth4507/Sales-Predicting-dashboard.git
+   cd Sales-Predicting-dashboard
+   ```
+2. Place the pre-trained regression model (`regression_model.pkl`) in the project directory. The model should predict `total_sales` using `units_sold` and `price_per_unit`.
 
-## **Dataset Requirements**
-
-Ensure your dataset contains the following columns:
-
-- **timestamp**: Date and time of the sale (format: `YYYY-MM-DD HH:MM`).
-- **customer_id**: Unique identifier for each customer.
-- **gender**: Customer gender (e.g., `Male`, `Female`).
-- **Country**: Country where the sale occurred.
-- **product**: Name of the product sold.
-- **units_sold**: Quantity of units sold.
-- **price_per_unit**: Price of each unit.
-- **total_sales**: Total revenue generated (`units_sold * price_per_unit`).
+3. Run the Streamlit application:
+   ```bash
+   streamlit run app.py
+   ```
+4. Open your browser and navigate to `http://localhost:8501`.
 
 ---
 
-## **Usage**
+## **Dashboard Pages**
 
-### **Filters**
-Use the sidebar to filter sales data by:
-- **Products**: Select specific products.
-- **Dates**: Specify a date range for analysis.
-- **Countries**: Filter by one or multiple countries.
-- **Gender**: Filter by gender.
+### **1. Home**
+- Displays overall metrics like:
+  - **Total Sales**: The sum of all sales in the filtered dataset.
+  - **Units Sold**: The total number of units sold.
+- Provides an overview of sales performance.
 
-### **Predictions**
-1. Navigate to the **"Prediction"** section.
-2. Enter the required inputs:
-   - Units Sold
-   - Price Per Unit
-3. View:
-   - Predicted total sales.
-     
-### **Sample Visualizations**
-1. **Sales Trends**: Line chart of sales over time.
-2. **Product Performance**: Bar chart of total sales by product.
-3. **Demographics**: Pie chart of sales by gender or country.
+### **2. Sales**
+- Line chart of sales trends by product over time.
+- Useful for tracking product performance across different periods.
+
+### **3. Trends**
+- Monthly trends for:
+  - **Total Sales**: Shows the growth or decline in sales over time.
+  - **Units Sold**: Displays the quantity of products sold over time.
+
+### **4. Product**
+- Bar chart of total sales by product.
+- Helps identify top-performing and low-performing products.
+
+### **5. Gender & Country Sales**
+- **Pie Chart**: Total sales distribution by gender.
+- **Bar Chart**: Sales performance by country.
+- Useful for demographic and regional analysis.
+
+### **6. Prediction**
+- Input **units sold** and **price per unit** to predict **total sales** using the regression model.
+- Allows users to simulate sales outcomes for given inputs.
 
 ---
 
-## **Model Details**
+## **Description of the Machine Learning Model**
 
-The dashboard includes a **Random Forest Regressor** model trained to predict sales using the following:
+### **Model Overview**
+- The regression model predicts **total sales** based on:
+  - `units_sold`
+  - `price_per_unit`
 
-- **Features**: `units_sold`, `price_per_unit`.
-- **Target**: `total_sales`.
+### **Training Process**
+1. The dataset was preprocessed to handle missing values and remove outliers.
+2. A simple linear regression model was trained using `Scikit-learn`.
+3. Evaluation metrics:
+   - **R² Score**
+   - **Mean Absolute Error (MAE)**
 
-### **Model Evaluation Metrics**
-- **Mean Absolute Error (MAE)**
-- **Mean Squared Error (MSE)**
-- **R² Score**
+### **Saving the Model**
+- The trained model was saved using `pickle`:
+   ```python
+   import pickle
+   with open('regression_model.pkl', 'wb') as file:
+       pickle.dump(model, file)
+   ```
 
+### **Prediction Example**
+- The model predicts total sales as follows:
+   ```python
+   input_data = [[10, 50.0]]  # Example: 10 units sold at $50/unit
+   predicted_sales = model.predict(input_data)
+   ```
+
+---
+
+## **Code Structure**
+- **`app.py`**: Main application script containing the dashboard logic.
+- **`regression_model.pkl`**: Pre-trained machine learning model for prediction.
+- **Dataset**: Sales data loaded dynamically from a remote URL.
+
+---
+
+## **Inline Code Documentation**
+The code includes detailed comments for ease of understanding. Examples:
+
+### **Data Loading and Preprocessing**
+```python
+@st.cache_data
+def get_data():
+    url = "https://raw.githubusercontent.com/Samarth4507/Sales-Predicting-dashboard/main/sales_data.csv"
+    try:
+        # Load data from URL
+        data = pd.read_csv(url)
+        # Convert timestamp to datetime format
+        data['timestamp'] = pd.to_datetime(data['timestamp'], format='%d-%m-%Y %H:%M', errors='coerce')
+        # Drop rows with invalid timestamps
+        data.dropna(subset=['timestamp'], inplace=True)
+        return data
+    except Exception as e:
+        st.error(f"Error loading data from the URL: {e}")
+        return pd.DataFrame()
+```
+
+### **Prediction Logic**
+```python
+if st.button("Predict Total Sales"):
+    if units_sold > 0 and price_per_unit > 0:
+        try:
+            # Prepare input for prediction
+            input_data = pd.DataFrame([[units_sold, price_per_unit]], columns=['units_sold', 'price_per_unit'])
+            predicted_sales = model.predict(input_data)[0]
+            st.success(f"Predicted Total Sales: ${predicted_sales:,.2f}")
+        except Exception as e:
+            st.error(f"Prediction failed: {e}")
+```
 
